@@ -9,6 +9,11 @@ import {
 // @ts-ignore
 import { useParams } from "react-router-dom";
 
+import {
+  getWeatherForecastFiveDays,
+  getWeatherData,
+} from "../../demoData/DemoData.js";
+
 const Home = (props) => {
   const [weatherData, setWeatherData] = useState({
     key: null,
@@ -20,20 +25,19 @@ const Home = (props) => {
   const { favoriteKey, favoriteName } = useParams();
 
   useEffect(() => {
-    console.log(favoriteKey, favoriteName);
     checkUrlParamsFavoriteWeather(favoriteKey, favoriteName);
   }, []);
 
   const checkUrlParamsFavoriteWeather = async (key, name) => {
-    if (favoriteKey !== undefined) {
+    console.log(weatherData.key);
+    console.log(key);
+    if (key !== undefined) {
       const { currentWeather, fiveDayForecast } = await getWeatherDataByKey(
         key
       );
-
       let data = {};
       data.weather = currentWeather[0];
-      data.weatherForcastFiveDaysArr =
-        fiveDayForecast.DailyForecasts;
+      data.weatherForcastFiveDaysArr = fiveDayForecast.DailyForecasts;
       data.key = key;
       data.name = name;
 
@@ -44,8 +48,31 @@ const Home = (props) => {
           isFavorite: checkIfExistsInStorage(key),
         };
       });
+    } else if (weatherData.key === null) {
+      const defaultLocationKeyValue = 215854;
+      const { currentWeather, fiveDayForecast } = await getWeatherDataByKey(
+        defaultLocationKeyValue
+      );
+
+      let data = {};
+      data.weather = getWeatherData[0];
+      data.weatherForcastFiveDaysArr =
+        getWeatherForecastFiveDays.DailyForecasts;
+      data.key = defaultLocationKeyValue;
+      data.name = "Tel Aviv";
+
+      console.log(data);
+
+      //make here api call and fill the needed data into the state
+      setWeatherData(() => {
+        return {
+          ...data,
+          isFavorite: checkIfExistsInStorage(key),
+        };
+      });
     }
   };
+
   const getWeatherKey = async (key, name) => {
     // make api call using the key
     let data = {};
