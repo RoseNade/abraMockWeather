@@ -11,7 +11,7 @@ const Search = ({ getWeatherKey }) => {
     let value = event.target.value;
 
     //should check for special cherecters and such
-    if (value !== "" && value.length >= 7) {
+    if (value !== "" && value.length >= 2) {
       // check for list of locations every 7 characters to not flood the API for now
       // const listOfLocations = await getLocationsUsingAutocomplete(value);
       const data = await getLocationsUsingAutocomplete(value);
